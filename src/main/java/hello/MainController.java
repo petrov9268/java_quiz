@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
 
 import hello.Lesson;
 import hello.LessonRepository;
@@ -37,14 +38,14 @@ public class MainController {
 	}
 	
 	@GetMapping(path="/show")
-	public @ResponseBody Optional<Lesson> showLesson(@RequestParam Long id) {
-		// This returns a JSON or XML with the lessons
-		return lessonRepository.findById(id);
-	}
+	public String showLesson(@RequestParam Long id, Model model) {
+		String buf = lessonRepository.findById(id).get().getName();
+		model.addAttribute("name", buf);
+		return "show";
+	}//does not work as expected
 	
 	@GetMapping(path="/delete")
 	public @ResponseBody String deleteLesson(@RequestParam Long id) {
-		// This returns a JSON or XML with the lessons
 		lessonRepository.deleteById(id);
 		return "Deleted";
 	}
