@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import java.util.List;
+import java.lang.Integer;
 
 import hello.Lesson;
 import hello.LessonRepository;
@@ -29,10 +31,14 @@ public class MainController {
 	@GetMapping(path="course")
     public String showCoursePage(Model model) {
 		Page<Lesson> pg = getPage(0, 10);
-		model.addAttribute("lessons", pg.getContent());
+		model.addAttribute("hasContent", pg.hasContent());
+		if (pg.hasContent()) {
+			model.addAttribute("lessons", pg.getContent());
+		}
         return "course";
     }
 	
+	/*
 	@GetMapping(path="course/add") // Map ONLY GET Requests
 	public @ResponseBody String addLesson (@RequestParam String title, @RequestParam String text) {
 		// @ResponseBody means the returned String is the response, not a view name
@@ -42,13 +48,61 @@ public class MainController {
 		ls.setLessonText(text);
 		lessonRepository.save(ls);
 		return "Saved";
-	}
+	}*/
 
 	@GetMapping(path="course/all")
 	public @ResponseBody Iterable<Lesson> getAllLessons() {
 		// This returns a JSON or XML with the lessons
 		return lessonRepository.findAll();
 	}
+	
+	@GetMapping(path = "course/edit")
+	public String showEditPage(@RequestParam(value = "page", required = false) Integer page, Model model) {
+		model.addAttribute("currPage", page);
+		if (page != null) {
+			Lesson ls = getPage(page).getContent().get(0);
+			model.addAttribute("lessonTitle", ls.getTitle());
+			model.addAttribute("lessonText", ls.getLessonText());
+		}
+		return "edit";
+	}
+	
+	@PostMapping(path = "course/edit")
+	public String addLesson(@RequestParam(value = "page", required = false) Integer page,
+							@RequestParam String title,
+							@RequestParam String lessonText) {
+		if (page != null) {
+			List<Lesson> pg = getPage(page).getContent();
+			if (pg.isEmpty()) {
+				return "redirect:"; //do a proper 404 page
+			}
+			Lesson ls = pg.get(0);
+			ls.setTitle(title);
+			ls.setLessonText(lessonText);
+			lessonRepository.save(ls);
+			return "redirect:/course/show?page=" + page;	
+		}
+		Lesson ls = new Lesson();
+		ls.setTitle(title);
+		ls.setLessonText(lessonText);
+		lessonRepository.save(ls);
+		return "redirect:/course/show?page=" + (lessonRepository.count() - 1);
+	}
+	
+	@PostMapping(path = "course/edit", params = "delete")
+	public String deleteLesson(@RequestParam int page) {
+		Long id = getPage(page).getContent().get(0).getId();
+		lessonRepository.deleteById(id);
+		return "redirect:";
+	}
+	
+	
+	/*@PostMapping(path = "course/delete")
+	public String deleteLesson(@RequestParam int page) {
+		//Long id = getPage(page).getContent().get(0).getId();
+		//lessonRepository.deleteById(id);
+		return "redirect:/course";
+	}*/
 	
 	@GetMapping(path="course/test")
 	public @ResponseBody Page<Lesson> getListOfLessons() {
@@ -67,14 +121,15 @@ public class MainController {
 		for (Lesson ls : pg.getContent()) {
 			title = ls.getTitle();
 			lessonText = ls.getLessonText();
-		}
+		}//there's no need in cycle here, but .getContent() returns Pages
 		model.addAttribute("lessonTitle", title);
 		model.addAttribute("lessonText", lessonText);
+		model.addAttribute("currPage", page);
 		if (!pg.isFirst()) {
-			model.addAttribute("prevPage", pg.getNumber() - 1);
+			model.addAttribute("prevPage", page - 1);
 		}
 		if (!pg.isLast()) {
-			model.addAttribute("nextPage", pg.getNumber() + 1);
+			model.addAttribute("nextPage", page + 1);
 		}
 		return "show";
     }
@@ -98,8 +153,9 @@ public class MainController {
 		return lessonRepository.findAll(new PageRequest(page, size));
 	}
 	
-	@GetMapping(path="course/delete")
-	public @ResponseBody String deleteLesson(@RequestParam Long id) {
+	/*@GetMapping(path="course/delete")
+	public @ResponseBody String deleteL(@RequestParam int page) {
+		Long id = getPage(page).getContent().get(0).getId();
 		lessonRepository.deleteById(id);
 		return "Deleted";
 	}
@@ -113,5 +169,5 @@ public class MainController {
 		ls.setLessonText(text);
 		lessonRepository.save(ls);
 		return "Updated";
-	}
+	}*/
 }

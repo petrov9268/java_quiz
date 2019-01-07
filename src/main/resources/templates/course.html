@@ -5,8 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<span th:each="i : ${#numbers.sequence(0, lessons.size() - 1)}">
-		<a href="/test" th:href="@{/course/show(page=${i})}"><br th:text="${lessons.get(i).getTitle()}"/></a>
+	<span th:if="${hasContent}">
+		<span th:each="i : ${#numbers.sequence(0, lessons.size() - 1)}">
+			<a href="/test" th:href="@{/course/show(page=${i})}">
+				<br th:text="${lessons.get(i).getTitle()}"/>
+			</a>
+		</span>
 	</span>
+	<p th:unless="${hasContent}">This course currently has no lessons.</p>
+	<a href="/course/edit">Add lesson</a>
 </body>
 </html>

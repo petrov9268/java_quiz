@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<form action="" method="post">
+		<fieldset>
+			<legend>Edit lesson:</legend>
+			Lesson title:<br>
+			<input type="text" name="title" th:value="${lessonTitle}" required /><br>
+			Lesson text:<br>
+			<textarea name="lessonText" rows="5" cols="40" required th:text="${lessonText}"></textarea><br><br>
+			<input type="submit" value="Post">
+		</fieldset>
+	</form>
+	<span th:if="${currPage != null}">
+		<form action="" method="post">
+			<input type="submit" class="button" name="delete" value="Delete" onClick="return confirm('sure?')"/>
+		</form>
+	</span>
+	<p><a href="/course">Course</a></p>
+</body>
+</html>
