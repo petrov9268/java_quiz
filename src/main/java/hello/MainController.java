@@ -58,12 +58,19 @@ public class MainController {
     public String showPage(@RequestParam int page, Model model) {
         String title = new String("");
 		String lessonText = new String("");
-		for (Lesson ls : getPage(page).getContent()) {
+		Page<Lesson> pg = getPage(page);
+		for (Lesson ls : pg.getContent()) {
 			title = ls.getTitle();
 			lessonText = ls.getLessonText();
 		}
 		model.addAttribute("lessonTitle", title);
 		model.addAttribute("lessonText", lessonText);
+		if (!pg.isFirst()) {
+			model.addAttribute("prevPage", pg.getNumber() - 1);
+		}
+		if (!pg.isLast()) {
+			model.addAttribute("nextPage", pg.getNumber() + 1);
+		}
 		return "show";
     }
 	

@@ -7,5 +7,13 @@
 <body>
     <h1><span th:text="${lessonTitle}"/></h1>
 	<span th:text="${lessonText}"/>
+	<p>
+		<a href="/test" th:href="@{/course/show(page=${prevPage})}">
+			<span th:if="${prevPage != null}" th:text="Previous"/>
+		</a>
+		<a href="/test" th:href="@{/course/show(page=${nextPage})}">
+			<span th:if="${nextPage != null}" th:text="Next"/>
+		</a>
+	</p>
 </body>
 </html>
