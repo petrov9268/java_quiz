@@ -8,12 +8,26 @@
     <h1><span th:text="${lessonTitle}"/></h1>
 	<span th:text="${lessonText}"/>
 	<p>
-		<a href="/test" th:href="@{/course/show(page=${prevPage})}">
-			<span th:if="${prevPage != null}" th:text="Previous"/>
-		</a>
-		<a href="/test" th:href="@{/course/show(page=${nextPage})}">
-			<span th:if="${nextPage != null}" th:text="Next"/>
-		</a>
+		<span th:if="${prevPage != null}">
+			<a href="/test" th:href="@{/course/show(page=${prevPage})}">
+				Previous
+			</a>
+		</span>
+		<span th:if="${nextPage != null}">
+			<a href="/test" th:href="@{/course/show(page=${nextPage})}">
+				Next
+			</a>
+		</span>
 	</p>
+	<form action="" method="post">
+		<fieldset>
+			<legend>Join discussion:</legend>
+			Your name:<br>
+			<input type="text" name="name" required><br>
+			Your comment:<br>
+			<textarea rows="5" cols="40" name="comment" required></textarea><br><br>
+			<input type="submit" value="Post">
+		</fieldset>
+	</form> 
 </body>
 </html>

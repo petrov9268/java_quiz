@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import hello.Lesson;
 import hello.LessonRepository;
+import hello.CommentsRepository;
 
 @Controller    // This means that this class is a Controller
 @RequestMapping(path="/") // This means URL's start with /course (after Application path)
@@ -56,9 +58,12 @@ public class MainController {
 	
 	@GetMapping(path="course/show")
     public String showPage(@RequestParam int page, Model model) {
-        String title = new String("");
+        Page<Lesson> pg = getPage(page);
+		if (!pg.hasContent()) {
+			return "redirect:"; //do a proper 404 page
+		}
+		String title = new String("");
 		String lessonText = new String("");
-		Page<Lesson> pg = getPage(page);
 		for (Lesson ls : pg.getContent()) {
 			title = ls.getTitle();
 			lessonText = ls.getLessonText();
@@ -73,6 +78,17 @@ public class MainController {
 		}
 		return "show";
     }
+	
+	@PostMapping(path="course/show")
+	public String postComment(@RequestParam int page,
+							  @RequestParam String name,
+							  @RequestParam String comment) {
+		Lesson ls = new Lesson();
+		ls.setTitle(name);
+		ls.setLessonText(comment);
+		lessonRepository.save(ls);
+		return "redirect:/course/show?page=" + page;
+	}
 	
 	public Page<Lesson> getPage(int page) {
 		return lessonRepository.findAll(new PageRequest(page, 1));
