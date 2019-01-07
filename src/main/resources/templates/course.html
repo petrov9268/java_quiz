@@ -5,7 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <p th:text="'Hello, ' + ${name} + '!'" />
-	This is a test message:<span th:text="${testMessage}" />
+	<span th:each="i : ${#numbers.sequence(0, lessons.size() - 1)}">
+		<a href="/test" th:href="@{/course/show(page=${i})}"><br th:text="${lessons.get(i).getTitle()}"/></a>
+	</span>
 </body>
 </html>

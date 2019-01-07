@@ -14,8 +14,10 @@ public class Lesson {
 	@GeneratedValue
     @Column(name = "Id", nullable = false)
     private Long id;
-	@Column(name = "Name", length = 64, nullable = false)
-    private String name;
+	@Column(name = "Title", length = 64, nullable = false)
+    private String title;
+	@Column(name = "LessonText", length = 1024, nullable = false)
+    private String lessonText;
 
 	public Long getId() {
 		return id;
@@ -25,11 +27,19 @@ public class Lesson {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public String getLessonText() {
+		return lessonText;
+	}
+
+	public void setLessonText(String lessonText) {
+		this.lessonText = lessonText;
 	}
 }
