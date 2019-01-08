@@ -5,20 +5,34 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <h1><span th:text="${lessonTitle}"/></h1>
-	<span th:text="${lessonText}"/>
-	<p>
-		<span th:if="${prevPage != null}">
-			<a href="/test" th:href="@{/course/show(page=${prevPage})}">
-				Previous
-			</a>
-		</span>
-		<span th:if="${nextPage != null}">
-			<a href="/test" th:href="@{/course/show(page=${nextPage})}">
-				Next
-			</a>
-		</span>
-	</p>
+    <h1><span th:text="${lessonTitle}"></span></h1>
+	<p th:text="${lessonText}"></p>
+
+	<div th:if="${question} != null">
+		<form action="" method="post">
+			<span th:text="${question}"></span><br>
+			<input type="radio" name="option" value="1" required>
+			<span th:text="${option1}"></span><br>
+			<input type="radio" name="option" value="2">
+			<span th:text="${option2}"></span><br>
+			<input type="radio" name="option" value="3">
+			<span th:text="${option3}"></span><br>
+			<input type="submit" value="Check">
+			<span th:text="${msg}"></span><br>
+		</form>
+	</div>
+	
+	<div th:if="${prevPage != null}">
+		<a th:href="@{/course/show(page=${prevPage})}">
+			Previous
+		</a>
+	</div>
+	<div th:if="${nextPage != null}">
+		<a th:href="@{/course/show(page=${nextPage})}">
+			Next
+		</a>
+	</div>
+	
 	<p>
 		<a href="/test" th:href="@{/course/edit(page=${currPage})}">
 			Edit
@@ -32,7 +46,7 @@
 	<br>
 	<table>
 		Comments:<br>
-		<span th:if="${lessonComments} == null"><br>There are no comments for this lesson.</span>
+		<span th:if="${lessonComments.isEmpty()}"><br>There are no comments for this lesson.</span>
 		<br>
 		<div th:each="lessonComment : ${lessonComments}">
 			<tr>
@@ -40,7 +54,7 @@
 			</tr>
 			<br>
 			<tr>
-				<span th:text="${lessonComment.name}"></span>
+				<span th:text="${lessonComment.name}"></span>:
 			</tr>
 			<br>
 			<tr>
@@ -54,9 +68,9 @@
 		<fieldset>
 			<legend>Join discussion:</legend>
 			Your name:<br>
-			<input type="text" name="name" required><br>
+			<input type="text" name="name" maxlength="40" required><br>
 			Your comment:<br>
-			<textarea rows="5" cols="40" name="comment" required></textarea><br><br>
+			<textarea rows="5" cols="40" name="comment" maxlength="280" required></textarea><br><br>
 			<input type="submit" value="Post">
 		</fieldset>
 	</form> 

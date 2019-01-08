@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
 
 import org.springframework.data.domain.Page;
@@ -29,6 +27,7 @@ public class MainController {
 	private LessonRepository lessonRepository;
 	@Autowired
 	private CommentsRepository commentsRepository;
+	private String msg;
 
 	@GetMapping(path="course")
     public String showCoursePage(Model model) {
@@ -40,35 +39,21 @@ public class MainController {
         return "course";
     }
 	
-	/*@GetMapping(path="course/add") // Map ONLY GET Requests
-	public @ResponseBody String addLesson(@RequestParam Long id,
-											@RequestParam String name,
-											@RequestParam String comment) {
-		// @ResponseBody means the returned String is the response, not a view name
-		// @RequestParam means it is a parameter from the GET or POST request
-		Comments cm = new Comments();
-		cm.setLessonId(id);
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-		cm.setDate(LocalDateTime.now().format(df));
-		cm.setName(name);
-		cm.setComment(comment);
-		commentsRepository.save(cm);
-		return "Saved";
-	}*/
-
-	@GetMapping(path="course/all")
-	public @ResponseBody Iterable<Comments> getAllComments() {
-		// This returns a JSON or XML with the lessons
-		return commentsRepository.findAll();
-	}
-	
 	@GetMapping(path = "course/edit")
-	public String showEditPage(@RequestParam(value = "page", required = false) Integer page, Model model) {
+	public String showEditPage(@RequestParam(value = "page", required = false) Integer page, 
+											 Model model) {
 		model.addAttribute("currPage", page);
 		if (page != null) {
-			Lesson ls = getPage(page).getContent().get(0);
+			Lesson ls = getLessonFromPage(getPage(page));
 			model.addAttribute("lessonTitle", ls.getTitle());
 			model.addAttribute("lessonText", ls.getLessonText());
+			model.addAttribute("question", ls.getQuestion());
+			model.addAttribute("option1", ls.getOption1());
+			model.addAttribute("option2", ls.getOption2());
+			model.addAttribute("option3", ls.getOption3());
+			if (ls.getAnswer() != null) {
+				model.addAttribute("checked", true);
+			}
 		}
 		return "edit";
 	}
@@ -78,11 +63,11 @@ public class MainController {
 							@RequestParam String title,
 							@RequestParam String lessonText) {
 		if (page != null) {
-			List<Lesson> pg = getPage(page).getContent();
-			if (pg.isEmpty()) {
+			Page<Lesson> pg = getPage(page);
+			if (!pg.hasContent()) {
 				return "redirect:"; //do a proper 404 page
 			}
-			Lesson ls = pg.get(0);
+			Lesson ls = getLessonFromPage(pg);
 			ls.setTitle(title);
 			ls.setLessonText(lessonText);
 			lessonRepository.save(ls);
@@ -101,10 +86,16 @@ public class MainController {
 		return "redirect:";
 	}
 	
-	
-	@GetMapping(path="course/test")
-	public @ResponseBody List<Comments> testFunc(@RequestParam int page) {
-		return lessonRepository.findById(getPageId(page)).get().getLessonComments();
+	@PostMapping(path = "course/show", params = "option")
+	public String checkAnswer(@RequestParam int page,
+								@RequestParam int option) {
+		if (option == getLessonFromPage(getPage(page)).getAnswer()) {
+			this.msg = "Correct!";
+		}
+		else {
+			this.msg = "Incorrect!";
+		}
+		return "redirect:/course/show?page=" + page;
 	}
 	
 	@GetMapping(path="course/show")
@@ -115,24 +106,26 @@ public class MainController {
 		}
 		String title = new String("");
 		String lessonText = new String("");
-		/*for (Lesson ls : pg.getContent()) {
-			title = ls.getTitle();
-			lessonText = ls.getLessonText();
-		}*/
-		Lesson ls = pg.getContent().get(0);
+		Lesson ls = getLessonFromPage(pg);
 		model.addAttribute("lessonTitle", ls.getTitle());
 		model.addAttribute("lessonText", ls.getLessonText());
 		model.addAttribute("currPage", page);
+		if (ls.getAnswer() != null) {
+			model.addAttribute("question", ls.getQuestion());
+			model.addAttribute("option1", ls.getOption1());
+			model.addAttribute("option2", ls.getOption2());
+			model.addAttribute("option3", ls.getOption3());
+			if (msg != null) {
+				showMessage(model);
+			}
+		}
 		if (!pg.isFirst()) {
 			model.addAttribute("prevPage", page - 1);
 		}
 		if (!pg.isLast()) {
 			model.addAttribute("nextPage", page + 1);
 		}
-		List<Comments> cm = ls.getLessonComments();
-		if (!cm.isEmpty()) {
-			model.addAttribute("lessonComments", cm);
-		}
+		model.addAttribute("lessonComments", ls.getLessonComments());
 		return "show";
     }
 	
@@ -159,6 +152,15 @@ public class MainController {
 	}
 	
 	public Long getPageId(int page) {
-		return getPage(page).getContent().get(0).getId();
+		return getLessonFromPage(getPage(page)).getId();
+	}
+	
+	public void showMessage(Model model) {
+		model.addAttribute("msg", this.msg);
+		this.msg = new String();
+	}
+	
+	public Lesson getLessonFromPage(Page<Lesson> pg) {
+		return pg.getContent().get(0);
 	}
 }

@@ -9,17 +9,37 @@
 		<fieldset>
 			<legend>Edit lesson:</legend>
 			Lesson title:<br>
-			<input type="text" name="title" th:value="${lessonTitle}" required /><br>
+			<input type="text" name="title" th:value="${lessonTitle}" maxlength="64" required/><br>
 			Lesson text:<br>
-			<textarea name="lessonText" rows="5" cols="40" required th:text="${lessonText}"></textarea><br><br>
+			<textarea name="lessonText" rows="5" cols="40" maxlength="1024" required th:text="${lessonText}"></textarea><br>
+			
+			<input type="checkbox" name="quiz" th:checked="${checked}">Add questions?<br>
+			
+			<div>
+				<input type="text" name="question" th:value="${question}" maxlength="280"/><br>
+				<input type="radio" name="option" value="1">
+				<input type="text" name="option1" th:value="${option1}" maxlength="40"/><br>
+				<input type="radio" name="option" value="2">
+				<input type="text" name="option2" th:value="${option2}" maxlength="40"/><br>
+				<input type="radio" name="option" value="3">
+				<input type="text" name="option3" th:value="${option3}" maxlength="40"/><br>
+			</div>
+			
 			<input type="submit" value="Post">
 		</fieldset>
 	</form>
-	<span th:if="${currPage != null}">
+	<div th:if="${currPage != null}">
 		<form action="" method="post">
 			<input type="submit" class="button" name="delete" value="Delete" onClick="return confirm('sure?')"/>
 		</form>
-	</span>
-	<p><a href="/course">Course</a></p>
+	</div>
+	<p>
+		<a th:if="${currPage != null}" th:href="@{/course/show(page=${currPage})}">
+			Cancel
+		</a>
+		<a th:if="${currPage == null}" href="/course">
+			Cancel
+		</a>
+	</p>
 </body>
 </html>

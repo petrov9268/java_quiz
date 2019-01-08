@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity // This tells Hibernate to make a table out of this class
 @Table(name = "COMMENTS")
@@ -26,12 +24,12 @@ public class Comments {
     private String name;
 	@Column(name = "Comment", length = 280, nullable = false)
     private String comment;
-	
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long idd) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

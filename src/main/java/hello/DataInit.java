@@ -37,6 +37,11 @@ public class DataInit implements ApplicationRunner {
 							 "occaecat cupidatat non proident, sunt "	  +
 							 "in culpa qui officia deserunt mollit anim " +
 							 "id est laborum.");
+			ls.setAnswer(1);
+			ls.setQuestion("why chicken crossed the road?");
+			ls.setOption1("because it can");
+			ls.setOption2("yes");
+			ls.setOption3("why not?");
 			lessonRepository.save(ls);
 		}
 	}
