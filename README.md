@@ -6,10 +6,7 @@ For learning purposes.
 
 ## Features:
 * view, create, edit lessons
-* currently reacts to:
-```
-localhost:8080/course/all
-```
+* add comments
 
 ## Requirements:
 * JDK 1.8 or later
@@ -17,8 +14,8 @@ localhost:8080/course/all
 
 ## TODO:
 - add 404 redirect (and pages for other errors?)
-- comments
 - add check yourself (aka quiz)
+- add check for stringlength on textfields
 - get rid of helloworld and other leftovers
 - code cleanup
 - finish/fix pagination on course page (?)

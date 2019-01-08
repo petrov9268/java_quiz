@@ -29,6 +29,27 @@
 				Back
 		</a>
 	<p/>
+	<br>
+	<table>
+		Comments:<br>
+		<span th:if="${lessonComments} == null"><br>There are no comments for this lesson.</span>
+		<br>
+		<div th:each="lessonComment : ${lessonComments}">
+			<tr>
+				<span th:text="${lessonComment.date}"></span>
+			</tr>
+			<br>
+			<tr>
+				<span th:text="${lessonComment.name}"></span>
+			</tr>
+			<br>
+			<tr>
+				<span th:text="${lessonComment.comment}"></span>
+			</tr>
+			<br><br>
+		</div>
+	</table>
+	<br>
 	<form action="" method="post">
 		<fieldset>
 			<legend>Join discussion:</legend>

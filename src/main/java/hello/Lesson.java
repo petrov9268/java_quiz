@@ -6,6 +6,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import javax.persistence.OneToMany;
+//import javax.persistence.FetchType;
+//import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
+
+import java.util.List;
+
+import hello.Comments;
+
 @Entity // This tells Hibernate to make a table out of this class
 @Table(name = "COURSE")
 public class Lesson {
@@ -18,6 +27,18 @@ public class Lesson {
     private String title;
 	@Column(name = "LessonText", length = 1024, nullable = false)
     private String lessonText;
+
+	@OneToMany(mappedBy = "lessonId", cascade = CascadeType.ALL)
+	//@JoinColumn(name = "lesson_id")
+	private List<Comments> comments;
+	
+	public List<Comments> getLessonComments() {
+		return comments;
+	}
+	
+	public void setLessonComments(List<Comments> comments) {
+		this.comments = comments;
+	}
 
 	public Long getId() {
 		return id;
