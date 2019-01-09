@@ -25,7 +25,7 @@ public class DataInit implements ApplicationRunner {
 		if (count == 0) {
 			for (int i = 0; i < 33; i++) {
 				Lesson ls = new Lesson();
-				ls.setTitle("first lesson");
+				ls.setTitle("Lesson 1." + i);
 				ls.setLessonText("Lorem ipsum dolor sit amet, consectetur "   +
 								"adipiscing elit, sed do eiusmod tempor "    +
 								"incididunt ut labore et dolore magna " 	  +
@@ -39,7 +39,7 @@ public class DataInit implements ApplicationRunner {
 								"in culpa qui officia deserunt mollit anim " +
 								"id est laborum.");
 				ls.setAnswer(1);
-				ls.setQuestion("Question for the lesson?");
+				ls.setQuestion("Question for the lesson.");
 				ls.setOption1("Correct answer");
 				ls.setOption2("Incorrect answer 1");
 				ls.setOption3("Incorrect answer 2");

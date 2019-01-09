@@ -29,6 +29,7 @@ public class MainController {
 	private CommentsRepository commentsRepository;
 	private String msg;
 
+	//course main page
 	@GetMapping(path="course")
     public String showCoursePage(@RequestParam(value = "page", required = false) Integer page,
 								Model model) {
@@ -49,15 +50,11 @@ public class MainController {
 			model.addAttribute("isFirst", pg.isFirst());
 			model.addAttribute("isLast", pg.isLast());
 		}
-		/*if (!pg.isFirst()) {
-			model.addAttribute("prevPage", page - 1);
-		}
-		if (!pg.isLast()) {
-			model.addAttribute("nextPage", page + 1);
-		}*/
         return "course";
     }
 	
+	//edit page
+	//retrieve data from db
 	@GetMapping(path = "course/edit")
 	public String showEditPage(@RequestParam(value = "page", required = false) Integer page, 
 											 Model model) {
@@ -82,6 +79,7 @@ public class MainController {
 		return "edit";
 	}
 	
+	//add update
 	@PostMapping(path = "course/edit")
 	public String addLesson(@RequestParam(value = "page", required = false) Integer page,
 							@RequestParam String title,
@@ -114,24 +112,15 @@ public class MainController {
 		return "redirect:/course/show?page=" + buf;	
 	}
 	
+	//delete
 	@PostMapping(path = "course/edit", params = "delete")
 	public String deleteLesson(@RequestParam int page) {
 		lessonRepository.deleteById(getPageId(page));
 		return "redirect:";
 	}
 	
-	@PostMapping(path = "course/show", params = "option")
-	public String checkAnswer(@RequestParam int page,
-								@RequestParam int option) {
-		if (option == getLessonFromPage(getPage(page)).getAnswer()) {
-			this.msg = "Correct!";
-		}
-		else {
-			this.msg = "Incorrect!";
-		}
-		return "redirect:/course/show?page=" + page;
-	}
-	
+	//lessons pages
+	//show
 	@GetMapping(path="course/show")
     public String showPage(@RequestParam int page, Model model) {
         Page<Lesson> pg = getPage(page);
@@ -153,16 +142,13 @@ public class MainController {
 				showMessage(model);
 			}
 		}
-		if (!pg.isFirst()) {
-			model.addAttribute("prevPage", page - 1);
-		}
-		if (!pg.isLast()) {
-			model.addAttribute("nextPage", page + 1);
-		}
+		model.addAttribute("isFirst", pg.isFirst());
+		model.addAttribute("isLast", pg.isLast());
 		model.addAttribute("lessonComments", ls.getLessonComments());
 		return "show";
     }
 	
+	//update
 	@PostMapping(path="course/show")
 	public String postComment(@RequestParam int page,
 							  @RequestParam String name,
@@ -174,6 +160,19 @@ public class MainController {
 		cm.setName(name);
 		cm.setComment(comment);
 		commentsRepository.save(cm);
+		return "redirect:/course/show?page=" + page;
+	}
+	
+	//check user answer
+	@PostMapping(path = "course/show", params = "option")
+	public String checkAnswer(@RequestParam int page,
+								@RequestParam int option) {
+		if (option == getLessonFromPage(getPage(page)).getAnswer()) {
+			this.msg = "Correct!";
+		}
+		else {
+			this.msg = "Incorrect!";
+		}
 		return "redirect:/course/show?page=" + page;
 	}
 	

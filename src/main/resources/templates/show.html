@@ -22,13 +22,13 @@
 		</form>
 	</div>
 	
-	<span th:if="${prevPage != null}">
-		<a th:href="@{/course/show(page=${prevPage})}">
+	<span th:if="${not isFirst}">
+		<a th:href="@{/course/show(page=${currPage - 1})}">
 			Previous
 		</a>
 	</span>
-	<span th:if="${nextPage != null}">
-		<a th:href="@{/course/show(page=${nextPage})}">
+	<span th:if="${not isLast}">
+		<a th:href="@{/course/show(page=${currPage + 1})}">
 			Next
 		</a>
 	</span>

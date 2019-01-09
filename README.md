@@ -1,25 +1,25 @@
 # Java Quiz
 
-Simple Java Quiz web application. Created with [Spring Framework][spr].
-Uses H2 in-memory database.
-For learning purposes.
+Веб приложение для создания обучающих курсов. Создано с помощью [Spring Framework][spr].
+Использует БД H2.
+Проверялось на win10 x86-64, firefox x86-64 64.0
+Проект создан в обучающих целях.
 
-## Features:
-* view, create, edit lessons
-* add comments
+## Возможности:
+* добавление/чтение/изменение/удаление уроков в курсе
+* простая система комментариев
+* возможность добавить к каждому уроку вопрос для проверки
 
-## Requirements:
-* JDK 1.8 or later
-* Maven 3.2 or later
+## Требования:
+* JDK 1.8 или выше
+* Maven 3.2 или выше
+
+## Сборка
+Выполнить `mvn spring-boot::run` из командной строки или запустить .bat файл.
 
 ## TODO:
-- add 404 redirect (and pages for other errors?)
-- add check yourself (aka quiz)
-- add check for stringlength on textfields
-- get rid of helloworld and other leftovers
-- code cleanup
-- finish/fix pagination on course page (?)
-- unit tests (?)
-- css (?)
+- коды ошибок (404 и т.д.) не читаются
+- тесты
+- css
 
 [spr]: https://spring.io/ "Spring"
