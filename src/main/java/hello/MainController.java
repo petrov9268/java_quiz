@@ -30,12 +30,31 @@ public class MainController {
 	private String msg;
 
 	@GetMapping(path="course")
-    public String showCoursePage(Model model) {
-		Page<Lesson> pg = getPage(0, 10);
+    public String showCoursePage(@RequestParam(value = "page", required = false) Integer page,
+								Model model) {
+		Page<Lesson> pg;
+		if (page != null) {
+			pg = getPage(page, 10);
+		}
+		else {
+			pg = getPage(0, 10);
+		}
+		if (!pg.hasContent()) {
+			return "redirect:"; //do a proper 404 page
+		}
 		model.addAttribute("hasContent", pg.hasContent());
 		if (pg.hasContent()) {
 			model.addAttribute("lessons", pg.getContent());
+			model.addAttribute("currPage", pg.getNumber());
+			model.addAttribute("isFirst", pg.isFirst());
+			model.addAttribute("isLast", pg.isLast());
 		}
+		/*if (!pg.isFirst()) {
+			model.addAttribute("prevPage", page - 1);
+		}
+		if (!pg.isLast()) {
+			model.addAttribute("nextPage", page + 1);
+		}*/
         return "course";
     }
 	

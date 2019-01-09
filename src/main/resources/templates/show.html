@@ -22,16 +22,16 @@
 		</form>
 	</div>
 	
-	<div th:if="${prevPage != null}">
+	<span th:if="${prevPage != null}">
 		<a th:href="@{/course/show(page=${prevPage})}">
 			Previous
 		</a>
-	</div>
-	<div th:if="${nextPage != null}">
+	</span>
+	<span th:if="${nextPage != null}">
 		<a th:href="@{/course/show(page=${nextPage})}">
 			Next
 		</a>
-	</div>
+	</span>
 	
 	<p>
 		<a href="/test" th:href="@{/course/edit(page=${currPage})}">
