@@ -43,16 +43,21 @@ public class MainController {
 	public String showEditPage(@RequestParam(value = "page", required = false) Integer page, 
 											 Model model) {
 		model.addAttribute("currPage", page);
+		model.addAttribute("checked", false);
 		if (page != null) {
+			Page<Lesson> pg = getPage(page);
+			if (!pg.hasContent()) {
+				return "redirect:"; //do a proper 404 page
+			}
 			Lesson ls = getLessonFromPage(getPage(page));
 			model.addAttribute("lessonTitle", ls.getTitle());
 			model.addAttribute("lessonText", ls.getLessonText());
-			model.addAttribute("question", ls.getQuestion());
-			model.addAttribute("option1", ls.getOption1());
-			model.addAttribute("option2", ls.getOption2());
-			model.addAttribute("option3", ls.getOption3());
 			if (ls.getAnswer() != null) {
 				model.addAttribute("checked", true);
+				model.addAttribute("question", ls.getQuestion());
+				model.addAttribute("option1", ls.getOption1());
+				model.addAttribute("option2", ls.getOption2());
+				model.addAttribute("option3", ls.getOption3());
 			}
 		}
 		return "edit";
@@ -61,23 +66,33 @@ public class MainController {
 	@PostMapping(path = "course/edit")
 	public String addLesson(@RequestParam(value = "page", required = false) Integer page,
 							@RequestParam String title,
-							@RequestParam String lessonText) {
+							@RequestParam String lessonText,
+							@RequestParam(value = "question", required = false) String question,
+							@RequestParam(value = "option", required = false) Integer answer,
+							@RequestParam(value = "option1", required = false) String option1,
+							@RequestParam(value = "option2", required = false) String option2,
+							@RequestParam(value = "option3", required = false) String option3,
+							@RequestParam(value = "quiz", required = false) boolean quiz) {
+		Lesson ls;
+		String buf;
 		if (page != null) {
-			Page<Lesson> pg = getPage(page);
-			if (!pg.hasContent()) {
-				return "redirect:"; //do a proper 404 page
-			}
-			Lesson ls = getLessonFromPage(pg);
-			ls.setTitle(title);
-			ls.setLessonText(lessonText);
-			lessonRepository.save(ls);
-			return "redirect:/course/show?page=" + page;	
+			ls = getLessonFromPage(getPage(page));
+			buf = page.toString();
 		}
-		Lesson ls = new Lesson();
-		ls.setTitle(title);
-		ls.setLessonText(lessonText);
-		lessonRepository.save(ls);
-		return "redirect:/course/show?page=" + (lessonRepository.count() - 1);
+		else {
+			ls = new Lesson();
+			Long n = lessonRepository.count();
+			buf = n.toString();
+		}
+		
+		if (quiz) {
+				saveLesson(ls, title, lessonText, question, answer ,
+							option1, option2, option3);
+			}
+		else {
+				saveLesson(ls, title, lessonText);
+		}
+		return "redirect:/course/show?page=" + buf;	
 	}
 	
 	@PostMapping(path = "course/edit", params = "delete")
@@ -162,5 +177,29 @@ public class MainController {
 	
 	public Lesson getLessonFromPage(Page<Lesson> pg) {
 		return pg.getContent().get(0);
+	}
+	
+	public void saveLesson(Lesson ls, String title, String lessonText) {
+		ls.setTitle(title);
+		ls.setLessonText(lessonText);
+		ls.setAnswer(null);
+		ls.setQuestion(null);
+		ls.setOption1(null);
+		ls.setOption2(null);
+		ls.setOption3(null);
+		lessonRepository.save(ls);
+	}
+	
+		public void saveLesson(Lesson ls, String title,	String lessonText,
+								String question, Integer answer, String option1,
+								String option2,	String option3) {
+		ls.setTitle(title);
+		ls.setLessonText(lessonText);
+		ls.setAnswer(answer);
+		ls.setQuestion(question);
+		ls.setOption1(option1);
+		ls.setOption2(option2);
+		ls.setOption3(option3);
+		lessonRepository.save(ls);
 	}
 }
