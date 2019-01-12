@@ -40,16 +40,14 @@ public class MainController {
 		else {
 			pg = getPage(0, 10);
 		}
-		if (!pg.hasContent()) {
+		/*if (!pg.hasContent()) {
 			return "redirect:"; //do a proper 404 page
-		}
+		}*/
 		model.addAttribute("hasContent", pg.hasContent());
-		if (pg.hasContent()) {
-			model.addAttribute("lessons", pg.getContent());
-			model.addAttribute("currPage", pg.getNumber());
-			model.addAttribute("isFirst", pg.isFirst());
-			model.addAttribute("isLast", pg.isLast());
-		}
+		model.addAttribute("lessons", pg.getContent());
+		model.addAttribute("currPage", pg.getNumber());
+		model.addAttribute("isFirst", pg.isFirst());
+		model.addAttribute("isLast", pg.isLast());
         return "course";
     }
 	
