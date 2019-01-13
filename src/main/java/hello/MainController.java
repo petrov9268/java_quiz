@@ -40,9 +40,6 @@ public class MainController {
 		else {
 			pg = getPage(0, 10);
 		}
-		/*if (!pg.hasContent()) {
-			return "redirect:"; //do a proper 404 page
-		}*/
 		model.addAttribute("hasContent", pg.hasContent());
 		model.addAttribute("lessons", pg.getContent());
 		model.addAttribute("currPage", pg.getNumber());
@@ -72,6 +69,7 @@ public class MainController {
 				model.addAttribute("option1", ls.getOption1());
 				model.addAttribute("option2", ls.getOption2());
 				model.addAttribute("option3", ls.getOption3());
+				model.addAttribute("answer", ls.getAnswer());
 			}
 		}
 		return "edit";
