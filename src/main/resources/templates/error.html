@@ -1,8 +1,11 @@
-<html>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <h1>Error</h1>
-	<p th:text="${errorMsg}"></p>
+    <p th:text="'Hello, ' + ${errorMsg} + '!'" />
+	This is a test message:<span th:text="${testMessage}" />
 </body>
 </html>

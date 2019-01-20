@@ -23,16 +23,16 @@
 			Lesson text:<br>
 			<textarea name="lessonText" rows="5" cols="40" maxlength="1024" required th:text="${lessonText}"></textarea><br>
 			
-			<input type="checkbox" name="quiz" th:checked="${checked}" onchange="myFunction(this)">
+			<input type="checkbox" name="quiz" th:checked="${checked}" onchange="changeDisplay(this)">
 			Add question?<br>
 			
 			<div id="questionField">
 				<input type="text" name="question" id="questionId" th:value="${question}" maxlength="280" th:required="${checked}"/><br>
-				<input type="radio" name="option" value="1" id="radioId" th:required="${checked}" th:checked="${answer == 1}">
+				<input type="radio" name="answer" value="1" id="radioId" th:required="${checked}" th:checked="${answer == 1}">
 				<input type="text" name="option1" id="option1Id" th:value="${option1}" maxlength="40"/ th:required="${checked}"><br>
-				<input type="radio" name="option" value="2" th:checked="${answer == 2}">
+				<input type="radio" name="answer" value="2" th:checked="${answer == 2}">
 				<input type="text" name="option2" id="option2Id" th:value="${option2}" maxlength="40"/ th:required="${checked}"><br>
-				<input type="radio" name="option" value="3" th:checked="${answer == 3}">
+				<input type="radio" name="answer" value="3" th:checked="${answer == 3}">
 				<input type="text" name="option3" id="option3Id" th:value="${option3}" maxlength="40"/ th:required="${checked}"><br>
 			</div>
 			
@@ -54,7 +54,7 @@
 	</p>
 	
 	<script>
-		function myFunction(checkbox) {
+		function changeDisplay(checkbox) {
 			var doc = document.getElementById("questionField");
 			var ids = ["questionId", "radioId", "option1Id", "option2Id", "option3Id"];
 			var i;
@@ -63,7 +63,6 @@
 				for (i = ids.length - 1; i >= 0; --i) {
 					document.getElementById(ids[i]).setAttribute("required", "required");
 				}
-				
 			} else {
 				doc.style.display = "none";
 				for (i = ids.length - 1; i >= 0; --i) {

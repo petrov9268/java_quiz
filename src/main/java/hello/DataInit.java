@@ -23,7 +23,7 @@ public class DataInit implements ApplicationRunner {
 		long count = lessonRepository.count();
 		
 		if (count == 0) {
-			for (int i = 0; i < 32; i++) {
+			for (int i = 0; i < 2; i++) {
 				Lesson ls = new Lesson();
 				ls.setTitle("Lesson 1." + i);
 				ls.setLessonText("Lorem ipsum dolor sit amet, consectetur "   +
