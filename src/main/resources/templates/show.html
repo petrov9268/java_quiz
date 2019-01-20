@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title th:text="${lessonTitle}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
     <h1><span th:text="${lessonTitle}"></span></h1>
-	<p th:text="${lessonText}"></p>
+	<p th:utext="${#strings.replace(#strings.escapeXml(lessonText), T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" ></p>
 
 	<div th:if="${question} != null">
 		<form action="" method="post">
@@ -58,9 +58,10 @@
 			</tr>
 			<br>
 			<tr>
-				<span th:text="${lessonComment.comment}"></span>
+				<span th:utext="${#strings.replace(#strings.escapeXml(lessonComment.comment), T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}">
+				</span>
 			</tr>
-			<br><br>
+			<br>
 		</div>
 	</table>
 	<br>
@@ -68,7 +69,7 @@
 		<fieldset>
 			<legend>Join discussion:</legend>
 			Your name:<br>
-			<input type="text" name="name" maxlength="40" required><br>
+			<input type="text" name="name" maxlength="20" required pattern=".*\S+.*"><br>
 			Your comment:<br>
 			<textarea rows="5" cols="40" name="comment" maxlength="280" required></textarea><br><br>
 			<input type="submit" value="Post">

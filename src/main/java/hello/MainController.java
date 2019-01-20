@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 
 import org.springframework.data.domain.Page;
@@ -29,6 +28,7 @@ public class MainController {
 	@Autowired
 	private CommentsRepository commentsRepository;
 	private String msg;
+	private String buf;
 
 	//course main page
 	@GetMapping(path="")
@@ -41,7 +41,6 @@ public class MainController {
 		else {
 			pg = getPage(0, 10);
 		}
-		model.addAttribute("hasContent", pg.hasContent());
 		model.addAttribute("lessons", pg.getContent());
 		model.addAttribute("currPage", pg.getNumber());
 		model.addAttribute("isFirst", pg.isFirst());
@@ -76,25 +75,14 @@ public class MainController {
 		return "edit";
 	}
 	
-	//add update
+	//add update with or without question
 	@PostMapping(path = "/edit")
 	public String addLesson(@RequestParam(value = "page", required = false) Integer page,
 							@RequestParam String title,
 							@RequestParam String lessonText) {
-		Lesson ls;
-		String buf;
-		if (page != null) {
-			ls = getLessonFromPage(getPage(page));
-			buf = page.toString();
-		}
-		else {
-			ls = new Lesson();
-			Long n = lessonRepository.count();
-			buf = n.toString();
-		}
-		saveLesson(ls, title, lessonText, null, null ,
+		saveLesson(createLesson(page), title.trim(), lessonText.trim(), null, null,
 							null, null, null);
-		return "redirect:/course/show?page=" + buf;	
+		return "redirect:/course/show?page=" + this.buf;	
 	}
 	
 	@PostMapping(path = "/edit", params = "quiz")
@@ -106,20 +94,9 @@ public class MainController {
 							@RequestParam String option1,
 							@RequestParam String option2,
 							@RequestParam String option3) {
-		Lesson ls;
-		String buf;
-		if (page != null) {
-			ls = getLessonFromPage(getPage(page));
-			buf = page.toString();
-		}
-		else {
-			ls = new Lesson();
-			Long n = lessonRepository.count();
-			buf = n.toString();
-		}
-		saveLesson(ls, title, lessonText, question, answer ,
-							option1, option2, option3);
-		return "redirect:/course/show?page=" + buf;	
+		saveLesson(createLesson(page), title.trim(), lessonText.trim(), question.trim(), answer,
+							option1.trim(), option2.trim(), option3.trim());
+		return "redirect:/course/show?page=" + this.buf;	
 	}
 	
 	//delete
@@ -148,7 +125,7 @@ public class MainController {
 			model.addAttribute("option1", ls.getOption1());
 			model.addAttribute("option2", ls.getOption2());
 			model.addAttribute("option3", ls.getOption3());
-			if (msg != null) {
+			if (this.msg != null) {
 				showMessage(model);
 			}
 		}
@@ -157,18 +134,6 @@ public class MainController {
 		model.addAttribute("lessonComments", ls.getLessonComments());
 		return "show";
     }
-	
-	/*@GetMapping(path="/test")
-	@ResponseBody
-	public String testOne(@RequestParam int n) {
-		return "test" + n;
-	}
-	
-	@GetMapping(path="/test", params = "m")
-	@ResponseBody
-	public String testOne(@RequestParam int n, @RequestParam int m) {
-		return "test" + n + m;
-	}*/
 	
 	//update
 	@PostMapping(path="/show")
@@ -180,7 +145,7 @@ public class MainController {
 		DateTimeFormatter df = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		cm.setDate(LocalDateTime.now().format(df));
 		cm.setName(name);
-		cm.setComment(comment);
+		cm.setComment(comment.trim());
 		commentsRepository.save(cm);
 		return "redirect:/course/show?page=" + page;
 	}
@@ -212,23 +177,26 @@ public class MainController {
 	
 	public void showMessage(Model model) {
 		model.addAttribute("msg", this.msg);
-		this.msg = new String();
+		this.msg = null;
 	}
 	
 	public Lesson getLessonFromPage(Page<Lesson> pg) {
 		return pg.getContent().get(0);
 	}
 	
-	/*public void saveLesson(Lesson ls, String title, String lessonText) {
-		ls.setTitle(title);
-		ls.setLessonText(lessonText);
-		ls.setAnswer(null);
-		ls.setQuestion(null);
-		ls.setOption1(null);
-		ls.setOption2(null);
-		ls.setOption3(null);
-		lessonRepository.save(ls);
-	}*/
+	public Lesson createLesson(Integer page) {
+		Lesson ls;
+		if (page != null) {
+			ls = getLessonFromPage(getPage(page));
+			this.buf = page.toString();
+		}
+		else {
+			ls = new Lesson();
+			Long n = lessonRepository.count();
+			this.buf = n.toString();
+		}
+		return ls;
+	}
 	
 		public void saveLesson(Lesson ls, String title,	String lessonText,
 								String question, Integer answer, String option1,

@@ -1,18 +1,18 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>Java Course</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<span th:if="${hasContent}">
+	<p th:if="${lessons.isEmpty()}">This course currently has no lessons.</p>
+	<span th:unless="${lessons.isEmpty()}">
 		<span th:each="i : ${#numbers.sequence(0, lessons.size() - 1)}">
 			<a href="/test" th:href="@{/course/show(page=${i + currPage * 10})}">
 				<br th:text="${lessons.get(i).getTitle()}"/>
 			</a>
 		</span>
 	</span>
-	<p th:unless="${hasContent}">This course currently has no lessons.</p>
 	<span th:if="${not isFirst}">
 		<a th:href="@{/course(page=${currPage - 1})}">
 			Previous

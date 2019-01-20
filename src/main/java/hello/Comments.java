@@ -20,7 +20,7 @@ public class Comments {
     private Long lessonId;
 	@Column(name = "Date", nullable = false)
     private String date;
-	@Column(name = "Name", length = 40, nullable = false)
+	@Column(name = "Name", length = 20, nullable = false)
     private String name;
 	@Column(name = "Comment", length = 280, nullable = false)
     private String comment;
