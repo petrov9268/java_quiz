@@ -37,6 +37,9 @@ public class MainController {
 		Page<Lesson> pg;
 		if (page != null) {
 			pg = getPage(page, 10);
+			if (!pg.hasContent()) {
+				return "redirect:/course"; //do a proper 404 page
+			}
 		}
 		else {
 			pg = getPage(0, 10);
